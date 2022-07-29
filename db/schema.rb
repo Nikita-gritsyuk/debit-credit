@@ -11,9 +11,12 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.0].define(version: 2022_07_26_185754) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "transfer_transactions", force: :cascade do |t|
-    t.integer "sender_id"
-    t.integer "receiver_id"
+    t.bigint "sender_id"
+    t.bigint "receiver_id"
     t.decimal "amount", precision: 8, scale: 2, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

@@ -5,7 +5,7 @@ ruby "3.1.1"
 gem "rails", "~> 7.0.3", ">= 7.0.3.1"
 gem 'devise'
 gem "sprockets-rails"
-gem "sqlite3", "~> 1.4"
+gem 'pg'
 gem "puma", "~> 5.0"
 gem "importmap-rails"
 gem "turbo-rails"
@@ -21,6 +21,7 @@ group :development, :test do
   gem "rspec-rails"
   gem "factory_bot_rails"
   gem "faker"
+  gem 'dotenv-rails'
 end
 
 group :development do
