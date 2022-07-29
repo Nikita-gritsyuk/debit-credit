@@ -10,13 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_07_26_163300) do
+ActiveRecord::Schema[7.0].define(version: 2022_07_26_185754) do
+  create_table "transfer_transactions", force: :cascade do |t|
+    t.integer "sender_id"
+    t.integer "receiver_id"
+    t.decimal "amount", precision: 8, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["receiver_id"], name: "index_transfer_transactions_on_receiver_id"
+    t.index ["sender_id"], name: "index_transfer_transactions_on_sender_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "balance", precision: 8, scale: 2, default: "0.0", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
+  add_foreign_key "transfer_transactions", "users", column: "receiver_id"
+  add_foreign_key "transfer_transactions", "users", column: "sender_id"
 end
