@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  include ModelRestrictions
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :validatable
@@ -7,6 +8,8 @@ class User < ApplicationRecord
 
   has_many :incoming_transfer_transactions, class_name: 'TransferTransaction', foreign_key: 'receiver_id'
   has_many :outgoing_transfer_transactions, class_name: 'TransferTransaction', foreign_key: 'sender_id'
+
+  restrict_destroy
 
   def transfer_transactions
     incoming_transfer_transactions.or(outgoing_transfer_transactions)

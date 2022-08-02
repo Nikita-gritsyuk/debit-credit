@@ -10,7 +10,7 @@ RSpec.describe 'Transactions', type: :request do
       expect(response).to redirect_to(new_user_session_path)
     end
 
-    describe 'when user is signed in' do
+    context 'when user is signed in' do
       before do
         sign_in user
         # let user to have 100 incoming transactions in his account

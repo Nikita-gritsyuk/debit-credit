@@ -9,13 +9,13 @@ RSpec.describe TransferTransaction, type: :model do
   describe 'subjects validations' do
     let(:user) { create(:user) }
     it 'should validate presence of a sender or receiver' do
-      transfer_transaction = TransferTransaction.new
+      transfer_transaction = build(:transfer_transaction, sender: nil, receiver: nil)
       transfer_transaction.valid?
       expect(transfer_transaction.errors[:base]).to include('Transfer transaction must have a sender or receiver')
     end
 
     it 'should be invalid if sender and receiver are the same user' do
-      transfer_transaction = TransferTransaction.new(sender: user, receiver: user)
+      transfer_transaction = build(:transfer_transaction, sender: user, receiver: user)
       transfer_transaction.valid?
       expect(transfer_transaction.errors[:base]).to include('Sender and receiver must be different users')
     end
@@ -35,6 +35,20 @@ RSpec.describe TransferTransaction, type: :model do
       transfer_transaction = build(:transfer_transaction, sender: user)
       transfer_transaction.valid?
       expect(transfer_transaction.errors[:base]).to be_empty
+    end
+  end
+
+  describe 'should restrict existed transactions from changes' do
+    let(:user) { create(:user) }
+    let(:other_user) { create(:user) }
+    let(:transfer_transaction) { create(:transfer_transaction, sender: user, receiver: other_user) }
+
+    it 'should raise ActiveRecord::ActiveRecordError on transaction dwstroy' do
+      expect { transfer_transaction.destroy }.to raise_error(ActiveRecord::ActiveRecordError)
+    end
+
+    it 'should raise ActiveRecord::ActiveRecordError on transaction update' do
+      expect { transfer_transaction.update(amount: 100) }.to raise_error(ActiveRecord::ActiveRecordError)
     end
   end
 

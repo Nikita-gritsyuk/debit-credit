@@ -1,5 +1,6 @@
 class TransferTransaction < ApplicationRecord
   include ActiveModel::Validations
+  include ModelRestrictions
   validates_with TransferTransactionValidator, on: :create
 
   validates :amount, numericality: { greater_than: 0 }, presence: true
@@ -13,6 +14,9 @@ class TransferTransaction < ApplicationRecord
   scope :related_to_user_id, ->(user_id) { where(sender_id: user_id).or(where(receiver_id: user_id)) }
 
   after_create :recalculate_subject_balances!
+
+  restrict_destroy
+  restrict_update
 
   private
 
