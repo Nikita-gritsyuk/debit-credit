@@ -21,15 +21,15 @@ RSpec.describe 'Transactions', type: :request do
 
       it 'should display transactions list on the page' do
         get root_path
-        expect(response.body).to include('<p class="text-success"> + 100.0</p>')
-        expect(response.body).to include('<p class="text-danger"> - 100.0</p>')
+        expect(response.body).to include('<p class="text-success">+ 100.00 $</p>')
+        expect(response.body).to include('<p class="text-danger">- 100.00 $</p>')
       end
 
       it 'should paginate transactions list if :page param is present' do
         get root_path(page: 2)
-        expect(response.body).to include('<p class="text-success"> + 100.0</p>')
+        expect(response.body).to include('<p class="text-success">+ 100.00 $</p>')
         # outgoing transaction should not be displayed on page 2, this transaction is the last one
-        expect(response.body).to_not include('<p class="text-danger"> - 100.0</p>')
+        expect(response.body).to_not include('<p class="text-danger">- 100.00 $</p>')
       end
 
       it 'should show actual balance on the page' do
@@ -128,7 +128,9 @@ RSpec.describe 'Transactions', type: :request do
         end
 
         it 'should not create new transaction' do
-          expect { post transactions_path, params: params_with_invalid_email }.to_not change(TransferTransaction, :count)
+          expect do
+            post transactions_path, params: params_with_invalid_email
+          end.to_not change(TransferTransaction, :count)
         end
 
         it 'should not update sender balance' do
@@ -136,7 +138,9 @@ RSpec.describe 'Transactions', type: :request do
         end
 
         it 'should not update receiver balance' do
-          expect { post transactions_path, params: params_with_invalid_email }.to_not change(other_user.reload, :balance)
+          expect do
+            post transactions_path, params: params_with_invalid_email
+          end.to_not change(other_user.reload, :balance)
         end
 
         it 'should display error message' do
@@ -152,7 +156,9 @@ RSpec.describe 'Transactions', type: :request do
         end
 
         it 'should not create new transaction' do
-          expect { post transactions_path, params: params_with_invalid_amount }.to_not change(TransferTransaction, :count)
+          expect do
+            post transactions_path, params: params_with_invalid_amount
+          end.to_not change(TransferTransaction, :count)
         end
 
         it 'should not update sender balance' do
@@ -160,7 +166,9 @@ RSpec.describe 'Transactions', type: :request do
         end
 
         it 'should not update receiver balance' do
-          expect { post transactions_path, params: params_with_invalid_amount }.to_not change(other_user.reload, :balance)
+          expect do
+            post transactions_path, params: params_with_invalid_amount
+          end.to_not change(other_user.reload, :balance)
         end
 
         it 'should display error message' do

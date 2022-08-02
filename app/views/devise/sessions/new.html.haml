@@ -1,0 +1,18 @@
+%section.vh-100
+  .container-fluid.h-custom
+    .row.d-flex.justify-content-center.align-items-center.h-100
+      .col-md-9.col-lg-6.col-xl-5
+        = image_tag "bank.png", class: "mb-3"
+      .col-md-8.col-lg-6.col-xl-4.offset-xl-1
+        = form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
+          .d-flex.flex-row.align-items-center.justify-content-center.justify-content-lg-start
+            %p.lead.fw-bold.mb-0.me-3 Sign in
+          .divider.d-flex.my-4
+          / Email input
+          .form-outline.mb-4
+            = f.email_field :email, autofocus: true, autocomplete: "email", class: 'form-control  form-control-lg', placeholder: 'Email'
+          / Password input
+          .form-outline.mb-3
+            = f.password_field :password, autocomplete: "current-password", class: 'form-control form-control-lg', placeholder: 'Password'
+          .text-center.text-lg-start.mt-4.pt-2
+            = f.submit "Sign in", class: "btn btn-primary btn-lg", id: "sign-in-btn"

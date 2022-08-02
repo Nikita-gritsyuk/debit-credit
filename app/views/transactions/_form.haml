@@ -1,0 +1,10 @@
+= form_for @create_transfer_transaction_form, url: transactions_path, local: false  do |f|
+  = render 'form_errors'
+  .form-outline.mb-3
+    = f.label :receiver_email
+    = f.email_field :receiver_email, class: "form-control"
+  .form-outline.mb-3
+    = f.label :amount, "Amount"
+    = f.number_field :amount, step: 0.01, min: 0, class: "form-control"
+  .form-outline.mb-3
+    = f.submit "Transfer", class: "btn btn-primary btn-lg"

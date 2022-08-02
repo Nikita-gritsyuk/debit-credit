@@ -11,8 +11,11 @@ gem "importmap-rails"
 gem "turbo-rails"
 gem "stimulus-rails"
 gem "jbuilder"
+gem 'will_paginate', '~> 3.3'
+gem 'will_paginate-bootstrap-style'
 gem "redis", "~> 4.0"
 gem "tzinfo-data", platforms: %i[ mingw mswin x64_mingw jruby ]
+gem "haml-rails", "~> 2.0"
 gem "bootsnap", require: false
 gem "bootstrap"
 gem "sassc-rails"
@@ -31,6 +34,7 @@ group :development do
   gem "web-console"
   gem "rubocop"
   gem 'rubocop-rails', require: false
+  gem "erb2haml", :group => :development
 end
 
 group :test do  

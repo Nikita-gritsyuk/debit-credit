@@ -1,0 +1,9 @@
+.row.d-flex.justify-content-center.align-items-center.h-100
+  .col.col-xl-10
+    .card.mb-5{:style => "border-radius: 15px;"}
+      .card-body.p-4
+        %h3.mb-3
+          Balance: #{current_user.balance} $
+        %hr.my-4/
+        = render 'form'
+= render "transfer_transactions_history"

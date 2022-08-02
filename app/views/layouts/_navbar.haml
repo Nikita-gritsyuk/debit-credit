@@ -1,0 +1,15 @@
+%nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
+  .container-fluid
+    = link_to "DebitCredit", root_path, class: "navbar-brand"
+    %button.navbar-toggler{"aria-controls" => "navbarNavDropdown", "aria-expanded" => "false", "aria-label" => "Toggle navigation", "data-bs-target" => "#navbarNavDropdown", "data-bs-toggle" => "collapse", :type => "button"}
+      %span.navbar-toggler-icon
+    #navbarNavDropdown.collapse.navbar-collapse
+      %ul.navbar-nav.ms-auto.mb-2.mb-lg-0
+        - if user_signed_in?
+          %li.navbar-text
+            You are loged_in as #{current_user.email}
+          %li.nav-item
+            = link_to "Sign out", destroy_user_session_path, data: { "turbo-method": :delete }, class: "nav-link nav-item active"
+        - else
+          %li.nav-item
+            = link_to "Sign in", new_user_session_path, class: "nav-link nav-item active"

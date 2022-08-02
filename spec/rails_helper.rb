@@ -4,6 +4,7 @@ require 'factory_bot'
 require 'shoulda-matchers'
 require_relative 'support/factory_bot'
 require_relative 'support/chrome'
+require_relative 'helpers/capybara_helper'
 
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
@@ -24,8 +25,11 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
   config.filter_rails_from_backtrace!
 
+  config.include Shoulda::Matchers::ActiveModel, type: :form
   config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include Devise::Test::IntegrationHelpers, type: :request
   config.include Warden::Test::Helpers
+  config.include CapybaraHelper, type: :system
 end
 
 Shoulda::Matchers.configure do |config|

@@ -1,0 +1,15 @@
+%table.table
+  %thead
+    %tr
+      %th{:scope => "col"} Date Time
+      %th{:scope => "col"} Sender
+      %th{:scope => "col"} Receiver
+      %th{:scope => "col"} Amount
+  %tbody
+    - @transactions.each do |transaction|
+      %tr
+        %th{:scope => "row"}= transaction.created_at
+        %td= transaction.sender_signature
+        %td= transaction.receiver_signature
+        %td= transaction.styled_amount
+= will_paginate @transactions, list_classes: %w(pagination justify-content-center)

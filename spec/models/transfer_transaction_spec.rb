@@ -7,7 +7,7 @@ RSpec.describe TransferTransaction, type: :model do
   end
 
   describe 'subjects validations' do
-    let (:user) { create(:user) }
+    let(:user) { create(:user) }
     it 'should validate presence of a sender or receiver' do
       transfer_transaction = TransferTransaction.new
       transfer_transaction.valid?
