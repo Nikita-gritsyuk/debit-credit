@@ -12,6 +12,13 @@ class User < ApplicationRecord
     incoming_transfer_transactions.or(outgoing_transfer_transactions)
   end
 
+  # restrict manual balance updates
+  def balance=(_value)
+    return if new_record?
+
+    raise ActiveRecord::ActiveRecordError, 'Manual balance update is not allowed'
+  end
+
   # Single-query balance recounting. It works faster then geting two sum's by
   # grouping and MUCH faster then recalculating it on ruby side
   # I had realy tried to implement something similat with AR calculation,
@@ -32,5 +39,6 @@ class User < ApplicationRecord
   def recalculate_balance!
     binds = [ActiveRecord::Relation::QueryAttribute.new('id', id, ActiveRecord::Type::Integer.new)]
     ActiveRecord::Base.connection.exec_query(balance_recalculation_sql_query, 'sql', binds)
+    reload
   end
 end
