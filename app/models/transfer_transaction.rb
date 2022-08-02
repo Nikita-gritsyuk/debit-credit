@@ -2,7 +2,7 @@ class TransferTransaction < ApplicationRecord
   include ActiveModel::Validations
   validates_with TransferTransactionValidator, on: :create
 
-  validates :amount, numericality: { greater_than_or_equal_to: 0 }, presence: true
+  validates :amount, numericality: { greater_than: 0 }, presence: true
 
   belongs_to :sender, class_name: 'User', optional: true
   belongs_to :receiver, class_name: 'User', optional: true
@@ -10,21 +10,14 @@ class TransferTransaction < ApplicationRecord
   scope :inner, -> { where.not(sender: nil).and(where.not(receiver: nil)) }
   scope :system_incoming, -> { where(sender: nil).and(where.not(receiver: nil)) }
   scope :system_outgoing, -> { where.not(sender: nil).and(where(receiver: nil)) }
+  scope :related_to_user_id, ->(user_id) { where(sender_id: user_id).or(where(receiver_id: user_id)) }
 
-  before_create :update_sender_balance
-  before_create :update_receiver_balance
+  after_create :recalculate_subject_balances!
 
   private
 
-  def update_receiver_balance
-    return if receiver.nil? || !new_record?
-
-    receiver.update_attribute(:balance, receiver.balance + amount)
-  end
-
-  def update_sender_balance
-    return if sender.nil? || !new_record?
-
-    sender.update_attribute(:balance, sender.balance - amount)
+  def recalculate_subject_balances!
+    sender.lock!.recalculate_balance! if sender_id
+    receiver.lock!.recalculate_balance! if receiver_id
   end
 end
