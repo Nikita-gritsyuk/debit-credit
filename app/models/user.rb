@@ -24,24 +24,26 @@ class User < ApplicationRecord
 
   # Single-query balance recounting. It works faster then geting two sum's by
   # grouping and MUCH faster then recalculating it on ruby side
-  # I had realy tried to implement something similat with AR calculation,
+  # I realy tried to implement something similar with AR calculation,
   # but it can not provide required API
   # https://api.rubyonrails.org/v7.0.3/classes/ActiveRecord/Calculations.html
-  def balance_recalculation_sql_query
-    <<-SQL
-      UPDATE users SET balance = sum.result FROM (
-        SELECT ( SELECT COALESCE( SUM(transfer_transactions.amount), 0) FROM transfer_transactions
-                        WHERE transfer_transactions.receiver_id = $1 ) -
-               ( SELECT COALESCE( SUM(transfer_transactions.amount) , 0) FROM transfer_transactions
-                        WHERE transfer_transactions.sender_id = $1 )
-        AS result
-      ) sum WHERE users.id = $1;
-    SQL
-  end
-
   def recalculate_balance!
     binds = [ActiveRecord::Relation::QueryAttribute.new('id', id, ActiveRecord::Type::Integer.new)]
     ActiveRecord::Base.connection.exec_query(balance_recalculation_sql_query, 'sql', binds)
     reload
+  end
+
+  private
+
+  def balance_recalculation_sql_query
+    <<-SQL
+      UPDATE users SET balance = result.sum FROM (
+        SELECT SUM(
+          COALESCE((receiver_id = $1)::int * 2 - 1, -1) * transfer_transactions.amount
+        ) as sum
+        FROM transfer_transactions
+        WHERE sender_id = $1 OR receiver_id = $1
+      ) result WHERE users.id = $1
+    SQL
   end
 end
