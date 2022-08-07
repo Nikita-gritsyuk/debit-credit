@@ -37,7 +37,7 @@ class User < ApplicationRecord
 
   def balance_recalculation_sql_query
     <<-SQL
-      UPDATE users SET balance = result.sum FROM (
+      UPDATE users SET balance = COALESCE(result.sum, 0) FROM (
         SELECT SUM(
           COALESCE((receiver_id = $1)::int * 2 - 1, -1) * transfer_transactions.amount
         ) as sum
